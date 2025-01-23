@@ -1,12 +1,55 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
-  <script th:src="@{/js/script.js}" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title th:text="${post.title}">Название поста</title>
+    <script th:src="@{/js/script.js}" defer></script>
 </head>
 <body>
-<p th:text="'ping' + ${test}"></p>
+<header>
+    <h1><a href="/" style="text-decoration: none; color: inherit;">Блог</a></h1>
+</header>
+<div class="main-content page-container">
+    <h2 class="post-title" th:text="${post.title}">Название поста</h2>
+    <img class="post-image" th:src="@{${post.imagePath}}" alt="Image"/>
+    <div class="post-content">
+        <p th:each="content : ${post.content}" th:text="${content}"></p>
+    </div>
+    <div class="post-tags">
+        <span th:each="tag : ${post.tags}" th:text="${tag}" class="tag"></span>
+    </div>
+    <div class="post-actions">
+        <button class="edit-button">Редактировать</button>
+        <button class="delete-button">Удалить</button>
+    </div>
+
+    <!-- Лайки -->
+    <div class="post-likes">
+        <button class="like-button">❤️</button>
+        <span th:text="${post.likeCount}">0</span> Лайков
+    </div>
+
+    <!-- Комментарии -->
+    <div class="comments-section">
+        <h3>Комментарии</h3>
+        <ul class="comments-list">
+            <li th:each="comment : ${post.comments}" class="comment">
+                <span th:text="${comment.content}" class="comment-text"></span>
+                <button class="edit-comment-button">✏️</button>
+                <button class="delete-comment-button">🗑️</button>
+            </li>
+        </ul>
+        <div class="add-comment">
+            <textarea id="newComment" placeholder="Добавить комментарий"></textarea>
+            <button class="add-comment-button">Добавить</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 Блог</p>
+</footer>
 </body>
 </html>

@@ -4,9 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Лента постов</title>
     <script th:src="@{/js/script.js}" defer></script>
 </head>
 <body>
+<header>
+    <h1>Блог</h1>
+    <div class="filters">
+        <input type="text" id="tagFilter" placeholder="Фильтрация по тегу">
+        <button id="applyFilterButton" th:value="${filter}">Применить фильтр</button>
+    </div>
+    <button id="addPostButton" onclick="togglePostForm()">Добавить пост</button>
+</header>
+<div class="main-content">
+    <div class="pagination-settings">
+        <label for="pageSize">Показывать по:</label>
+        <select id="pageSize">
+            <option th:value="10" th:selected="${pageSize == 10}">10</option>
+            <option th:value="20" th:selected="${pageSize == 20}">20</option>
+            <option th:value="50" th:selected="${pageSize == 50}">50</option>
+        </select>
+    </div>
+
+    <div class="post-container">
+        <div th:if="${#lists.isEmpty(posts)}" class="no-posts">
+            <p>Ничего не найдено. Попробуйте изменить фильтры или добавить новые посты!</p>
+        </div>
+        <div class="post-item" th:each="post : ${posts}">
+            <h2><a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}"></a></h2>
+            <img th:src="@{${post.imagePath}}" alt="Image" class="post-image">
+            <div class="post-content-preview">
+                <p th:each="content: ${post.contentPreview}" th:text="${content}"></p>
+            </div>
+            <div class="post-tags" th:text="${post.tags}"></div>
+            <div class="post-stats">
+                <div class="like-count">
+                    <span th:text="${post.likeCount} + ' Лайков'"></span>
+                </div>
+                <div class="comment-count">
+                    <span th:text="${post.commentCount} + ' Комментариев'"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination" th:if="${!#lists.isEmpty(posts)}">
+        <button th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == currentPage} ? 'active page-button' : 'page-button'"
+                th:text="${i}">
+        </button>
+    </div>
+
+    <!-- Форма для добавления поста -->
+    <div id="postForm" class="post-form" style="display: none;">
+        <h2>Добавить новый пост</h2>
+        <form th:action="@{/posts}" method="post" enctype="multipart/form-data">
+            <input type="text" name="title" placeholder="Название поста" required>
+            <input type="file" name="image" accept="image/*" required>
+            <textarea name="content" placeholder="Текст поста" required></textarea>
+            <input type="text" name="tags" placeholder="Теги (через запятую)" required>
+            <button type="submit">Добавить</button>
+            <button type="button" onclick="togglePostForm()">Закрыть</button>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>

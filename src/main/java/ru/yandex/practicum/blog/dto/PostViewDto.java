@@ -12,7 +12,7 @@ import java.util.List;
 public class PostViewDto {
     private Long id;
     private String title;
-    private String image;
+    private String imagePath;
     private List<String> content;
     private String tags;
     private Long likeCount;
