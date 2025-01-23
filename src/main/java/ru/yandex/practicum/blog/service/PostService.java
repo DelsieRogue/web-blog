@@ -2,6 +2,7 @@ package ru.yandex.practicum.blog.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dao.CommentDao;
 import ru.yandex.practicum.blog.dao.PostDao;
 import ru.yandex.practicum.blog.dto.CommentDto;
@@ -11,12 +12,15 @@ import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.utils.ContentUtils;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final PostDao postDao;
     private final CommentDao commentDao;
+
+    private final ImageService imageService;
 
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
         return postDao.getPostPreviewList(page, size, tagFilter);
@@ -36,5 +40,11 @@ public class PostService {
                 .setTags(post.getTags())
                 .setImagePath(post.getImagePath())
                 .setComments(commentDtoList);
+    }
+
+    public void createPost(Post post, MultipartFile image) {
+        Optional<String> fileName = imageService.save(image);
+        fileName.ifPresent(post::setImagePath);
+        postDao.createPost(post);
     }
 }

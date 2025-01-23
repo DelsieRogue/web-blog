@@ -46,6 +46,10 @@ public class PostDao {
             FROM post p WHERE p.id = ?;
             """;
 
+    private static final String POST_INSERT_TEMPLATE = """
+            INSERT INTO post (title, image_path, content, tags) VALUES (?, ?, ?, ?);
+            """;
+
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
         String filter = getTagFilter(tagFilter);
         return jdbcTemplate.query(PREVIEW_POSTS_SELECT_TEMPLATE, new PostPreviewMapper(),
@@ -63,5 +67,9 @@ public class PostDao {
 
     private String getTagFilter(String tagFilter) {
         return tagFilter != null && !tagFilter.isBlank() ? "%" + tagFilter + "%" : "%";
+    }
+
+    public void createPost(Post post) {
+        jdbcTemplate.update(POST_INSERT_TEMPLATE, post.getTitle(), post.getImagePath(), post.getContent(), post.getTags());
     }
 }

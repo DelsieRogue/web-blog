@@ -1,7 +1,11 @@
 package ru.yandex.practicum.blog.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -10,18 +14,27 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebMvc
 @ComponentScan(basePackages = {"ru.yandex.practicum.blog"})
 public class WebConfiguration implements WebMvcConfigurer {
+    private final String serverPath;
+    private final String clientPath;
+    public WebConfiguration(@Value("${image.folder.server.path}") String serverPath,
+                            @Value("${image.folder.client.path}") String clientPath) {
+        this.serverPath = serverPath;
+        this.clientPath = clientPath;
+    }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String externalImagesPath = System.getenv("IMAGES_DIR");
 
         registry.addResourceHandler("/css/**")
                 .addResourceLocations("classpath:/static/css/");
         registry.addResourceHandler("/js/**")
                 .addResourceLocations("classpath:/static/js/");
-        registry.addResourceHandler("/image/**")
-                .addResourceLocations("file:" + externalImagesPath);
+        registry.addResourceHandler(clientPath + "**")
+                .addResourceLocations("file:" + serverPath);
+    }
 
-        System.out.println("Абсолютный путь: " + externalImagesPath);
+    @Bean
+    public MultipartResolver multipartResolver() {
+        return new StandardServletMultipartResolver();
     }
 }

@@ -58,11 +58,11 @@
     <!-- Форма для добавления поста -->
     <div id="postForm" class="post-form" style="display: none;">
         <h2>Добавить новый пост</h2>
-        <form th:action="@{/posts}" method="post" enctype="multipart/form-data">
-            <input type="text" name="title" placeholder="Название поста" required>
+        <form th:action="@{/post}" method="post" th:object="${newPost}" enctype="multipart/form-data">
+            <input type="text" name="title" th:field="*{title}" placeholder="Название поста" required>
             <input type="file" name="image" accept="image/*" required>
-            <textarea name="content" placeholder="Текст поста" required></textarea>
-            <input type="text" name="tags" placeholder="Теги (через запятую)" required>
+            <textarea name="content" th:field="*{content}" placeholder="Текст поста" required></textarea>
+            <input type="text" name="tags" th:field="*{tags}" placeholder="Теги (через запятую)" required>
             <button type="submit">Добавить</button>
             <button type="button" onclick="togglePostForm()">Закрыть</button>
         </form>

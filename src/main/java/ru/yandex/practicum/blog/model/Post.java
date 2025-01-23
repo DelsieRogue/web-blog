@@ -17,6 +17,5 @@ public class Post {
     private String content;
     private String tags;
     private Long likeCount;
-    private Long imageId;
     private LocalDateTime createdAt;
 }
