@@ -13,7 +13,7 @@ public class PostPreviewMapper implements RowMapper<PostPreviewDto> {
         return new PostPreviewDto()
                 .setId(rs.getLong("id"))
                 .setTitle(rs.getString("title"))
-                .setImagePath(rs.getString("image_path"))
+                .setImageName(rs.getString("image_name"))
                 .setTags(rs.getString("tags"))
                 .setLikeCount(rs.getLong("like_count"))
                 .setContentPreview(ContentUtils.getPreviewContent(rs.getString("content")))

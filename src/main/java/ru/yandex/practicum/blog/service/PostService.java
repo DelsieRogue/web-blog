@@ -38,13 +38,30 @@ public class PostService {
                 .setContent(ContentUtils.getContentByLine(post.getContent()))
                 .setLikeCount(post.getLikeCount())
                 .setTags(post.getTags())
-                .setImagePath(post.getImagePath())
+                .setImageName(post.getImageName())
                 .setComments(commentDtoList);
     }
 
     public void createPost(Post post, MultipartFile image) {
         Optional<String> fileName = imageService.save(image);
-        fileName.ifPresent(post::setImagePath);
+        fileName.ifPresent(post::setImageName);
         postDao.createPost(post);
+    }
+
+    public void updatePost(Post post, MultipartFile image) {
+        if (!image.isEmpty()) {
+            imageService.deleteImage(post.getImageName());
+            Optional<String> fileName = imageService.save(image);
+            fileName.ifPresent(post::setImageName);
+        }
+        postDao.updatePost(post);
+    }
+
+    public void deletePost(Long postId) {
+        Post post = postDao.getPostById(postId);
+        if (post.getImageName() != null) {
+            imageService.deleteImage(post.getImageName());
+        }
+        postDao.deletePost(postId);
     }
 }

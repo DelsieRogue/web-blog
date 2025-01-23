@@ -48,11 +48,17 @@ public class PostController {
         return "redirect:/post";
     }
 
-//    @PutMapping("/{id}")
-//    public String updatePost(@PathVariable("id") Long postId,
-//                             @ModelAttribute("post") Post post,
-//                             @RequestPart(value = "image", required = false) MultipartFile image) {
-//        postService.createPost(post, image);
-//        return "redirect:/post/" + postId;
-//    }
+    @PutMapping("/{id}/edit")
+    public String updatePost(@PathVariable("id") Long postId,
+                             @ModelAttribute("post") Post post,
+                             @RequestPart(value = "image", required = false) MultipartFile image) {
+        postService.updatePost(post, image);
+        return "redirect:/post/" + postId;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deletePost(@PathVariable("id") Long postId) {
+        postService.deletePost(postId);
+        return "redirect:/post";
+    }
 }

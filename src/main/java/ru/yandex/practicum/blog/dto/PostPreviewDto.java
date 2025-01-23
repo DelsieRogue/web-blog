@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 public class PostPreviewDto {
     private Long id;
     private String title;
-    private String imagePath;
+    private String imageName;
     private String contentPreview;
     private String tags;
     private Long likeCount;

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 public class Post {
     private Long id;
     private String title;
-    private String imagePath;
+    private String imageName;
     private String content;
     private String tags;
     private Long likeCount;

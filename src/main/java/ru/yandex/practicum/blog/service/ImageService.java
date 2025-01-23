@@ -8,6 +8,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,12 +18,9 @@ import java.util.UUID;
 @Service
 public class ImageService {
     private final String serverPath;
-    private final String clientPath;
 
-    public ImageService(@Value("${image.folder.server.path}") String serverPath,
-                            @Value("${image.folder.client.path}") String clientPath) {
+    public ImageService(@Value("${image.folder.server.path}") String serverPath) {
         this.serverPath = serverPath;
-        this.clientPath = clientPath;
     }
 
     public Optional<String> save(MultipartFile image) {
@@ -33,10 +33,20 @@ public class ImageService {
             String fileName = "file_" + UUID.randomUUID() + "." + extension;
             File destinationFile = new File(serverPath, fileName);
             image.transferTo(destinationFile);
-            return Optional.of(clientPath + fileName);
+            return Optional.of(fileName);
         } catch (IOException e) {
             log.error("Ошибка сохранения файла", e);
             return Optional.empty();
+        }
+    }
+
+    public void deleteImage(String imageName) {
+        try {
+            Path path = Paths.get(serverPath + imageName);
+            Files.delete(path);
+            log.info("Файл {} удалён" + imageName);
+        } catch (IOException e) {
+            log.error("Ошибка при удалении файла {}", imageName, e);
         }
     }
 }

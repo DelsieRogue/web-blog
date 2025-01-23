@@ -2,7 +2,7 @@ create table if not exists post
 (
     id         bigserial primary key,
     title      varchar(255) not null,
-    image_path varchar(1000),
+    image_name varchar(1000),
     content    text not null,
     tags       varchar(1000),
     like_count bigint default 0,

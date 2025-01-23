@@ -19,7 +19,7 @@ public class PostDao {
             SELECT p.id AS id,
                    p.title AS title,
                    p.content AS content,
-                   p.image_path AS image_path,
+                   p.image_name AS image_name,
                    p.tags AS tags,
                    p.like_count AS like_count,
                    count(c.id) AS comment_count
@@ -41,13 +41,22 @@ public class PostDao {
                    p.content AS content,
                    p.tags AS tags,
                    p.like_count AS like_count,
-                   p.image_path AS image_path,
+                   p.image_name AS image_name,
                    p.created_at AS created_at
             FROM post p WHERE p.id = ?;
             """;
 
     private static final String POST_INSERT_TEMPLATE = """
-            INSERT INTO post (title, image_path, content, tags) VALUES (?, ?, ?, ?);
+            INSERT INTO post (title, image_name, content, tags) VALUES (?, ?, ?, ?);
+            """;
+
+    private static final String POST_UPDATE_TEMPLATE = """
+            UPDATE post SET title = ?, image_name = ?, content = ?, tags = ? 
+            WHERE id = ?
+            """;
+
+    private static final String POST_DELETE_TEMPLATE = """
+            DELETE from post WHERE id = ?
             """;
 
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
@@ -70,6 +79,14 @@ public class PostDao {
     }
 
     public void createPost(Post post) {
-        jdbcTemplate.update(POST_INSERT_TEMPLATE, post.getTitle(), post.getImagePath(), post.getContent(), post.getTags());
+        jdbcTemplate.update(POST_INSERT_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags());
+    }
+
+    public void updatePost(Post post) {
+        jdbcTemplate.update(POST_UPDATE_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags(), post.getId());
+    }
+
+    public void deletePost(Long postId) {
+        jdbcTemplate.update(POST_DELETE_TEMPLATE, postId);
     }
 }
