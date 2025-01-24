@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.blog.dao.CommentDao;
 import ru.yandex.practicum.blog.dto.CommentDto;
+import ru.yandex.practicum.blog.dto.CommentViewDto;
+import ru.yandex.practicum.blog.mapper.CommentMapper;
 import ru.yandex.practicum.blog.model.Comment;
 
 @RequiredArgsConstructor
@@ -12,11 +14,13 @@ public class CommentService {
 
     private final CommentDao commentDao;
 
-    public void updateComment(Long id, Comment comment) {
+    public void updateComment(Long id, CommentDto commentDto) {
+        Comment comment = CommentMapper.fromCommentDto(commentDto);
         commentDao.updateComment(id, comment);
     }
 
-    public CommentDto createComment(Comment comment) {
+    public CommentViewDto createComment(CommentDto commentDto) {
+        Comment comment = CommentMapper.fromCommentDto(commentDto);
         return commentDao.createComment(comment);
     }
 

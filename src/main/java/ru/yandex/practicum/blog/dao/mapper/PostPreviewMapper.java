@@ -1,4 +1,4 @@
-package ru.yandex.practicum.blog.mapper;
+package ru.yandex.practicum.blog.dao.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.blog.dto.PostPreviewDto;

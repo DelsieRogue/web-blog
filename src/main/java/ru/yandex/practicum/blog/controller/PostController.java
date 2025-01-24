@@ -5,9 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.dto.PostViewDto;
-import ru.yandex.practicum.blog.model.Post;
+import ru.yandex.practicum.blog.mapper.PostMapper;
 import ru.yandex.practicum.blog.service.PostService;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class PostController {
         model.addAttribute("currentPage", page);
         model.addAttribute("pageSize", size);
         model.addAttribute("filter", tagFilter);
-        model.addAttribute("newPost", new Post());
+        model.addAttribute("newPost", new PostDto());
         return "posts";
     }
 
@@ -38,6 +39,7 @@ public class PostController {
     public String getPostView(Model model, @PathVariable("id") Long postId) {
         PostViewDto postView = postService.getPostViewById(postId);
         model.addAttribute("post", postView);
+        model.addAttribute("editPost", PostMapper.fromPostViewDto(postView));
         return "post";
     }
 
@@ -48,16 +50,16 @@ public class PostController {
     }
 
     @PostMapping
-    public String createPost(@ModelAttribute("newPost") Post post, @RequestPart(value = "image", required = false) MultipartFile image) {
-        postService.createPost(post, image);
+    public String createPost(@ModelAttribute("newPost") PostDto postDto, @RequestPart(value = "image", required = false) MultipartFile image) {
+        postService.createPost(postDto, image);
         return "redirect:/post";
     }
 
     @PutMapping("/{id}/edit")
     public String updatePost(@PathVariable("id") Long postId,
-                             @ModelAttribute("post") Post post,
+                             @ModelAttribute("post") PostDto editDto,
                              @RequestPart(value = "image", required = false) MultipartFile image) {
-        postService.updatePost(post, image);
+        postService.updatePost(postId, editDto, image);
         return "redirect:/post/" + postId;
     }
 

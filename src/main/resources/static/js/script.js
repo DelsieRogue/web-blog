@@ -49,6 +49,16 @@ function togglePostForm() {
     form.style.display = form.style.display === 'none' || form.style.display === '' ? 'block' : 'none';
 }
 
+function toggleFileInput(checkbox) {
+    const fileInput = document.getElementById('file-input');
+    if (checkbox.checked) {
+        fileInput.style.display = 'block';
+    } else {
+        fileInput.style.display = 'none';
+        fileInput.value = '';
+    }
+}
+
 function deletePost(postId) {
     if (confirm("Вы уверены, что хотите удалить этот пост?")) {
         fetch(`${POST_PATH}/${postId}`, {

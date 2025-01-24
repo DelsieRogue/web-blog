@@ -24,4 +24,11 @@ public class ContentUtils {
         }
         return Stream.of(content.split("\n")).collect(Collectors.toList());
     }
+
+    public static String getContentFromLine(List<String> lines) {
+        if (lines == null || lines.isEmpty()) {
+            return null;
+        }
+        return String.join("\n", lines);
+    }
 }

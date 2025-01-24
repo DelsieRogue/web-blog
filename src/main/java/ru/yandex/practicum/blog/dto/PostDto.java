@@ -4,17 +4,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class PostViewDto {
-    private Long id;
+public class PostDto {
     private String title;
     private String imageName;
-    private List<String> content;
+    private Boolean isNeedDeleteImage;
+    private String content;
     private String tags;
-    private Long likeCount;
-    private List<CommentViewDto> comments;
 }

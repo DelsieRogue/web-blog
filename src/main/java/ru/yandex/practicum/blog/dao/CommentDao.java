@@ -3,8 +3,8 @@ package ru.yandex.practicum.blog.dao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.blog.dto.CommentDto;
-import ru.yandex.practicum.blog.mapper.CommentDtoMapper;
+import ru.yandex.practicum.blog.dto.CommentViewDto;
+import ru.yandex.practicum.blog.dao.mapper.CommentDtoMapper;
 import ru.yandex.practicum.blog.model.Comment;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class CommentDao {
             DELETE from comment WHERE id = ?
             """;
 
-    public List<CommentDto> getByPostId(Long postId) {
+    public List<CommentViewDto> getByPostId(Long postId) {
         return jdbcTemplate.query(COMMENTS_BY_POST_SELECT_TEMPLATE, new CommentDtoMapper(), postId);
     }
 
@@ -39,7 +39,7 @@ public class CommentDao {
         jdbcTemplate.update(COMMENT_BY_ID_UPDATE_TEMPLATE, comment.getContent(), id);
     }
 
-    public CommentDto createComment(Comment comment) {
+    public CommentViewDto createComment(Comment comment) {
         return jdbcTemplate.queryForObject(COMMENT_CREATE_TEMPLATE, new CommentDtoMapper(),
                 comment.getContent(), comment.getPostId());
     }

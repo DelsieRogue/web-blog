@@ -5,9 +5,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.blog.dto.PostPreviewDto;
-import ru.yandex.practicum.blog.mapper.PostPreviewMapper;
+import ru.yandex.practicum.blog.dao.mapper.PostPreviewMapper;
 import ru.yandex.practicum.blog.model.Post;
 
+import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -88,8 +90,20 @@ public class PostDao {
         jdbcTemplate.update(POST_CREATE_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags());
     }
 
-    public void updatePost(Post post) {
-        jdbcTemplate.update(POST_UPDATE_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags(), post.getId());
+    public void updatePost(Long postId, Post post) {
+        jdbcTemplate.update(connection -> {
+            PreparedStatement ps = connection.prepareStatement(POST_UPDATE_TEMPLATE);
+            ps.setString(1, post.getTitle());
+            if (post.getImageName() == null) {
+                ps.setNull(2, Types.VARCHAR);
+            } else {
+                ps.setString(2, post.getImageName());
+            }
+            ps.setString(3, post.getContent());
+            ps.setString(4, post.getTags());
+            ps.setLong(5, postId);
+            return ps;
+        });
     }
 
     public void deletePost(Long postId) {

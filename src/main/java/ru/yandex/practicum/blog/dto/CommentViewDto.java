@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 @Data
 @NoArgsConstructor
 @Accessors(chain = true)
-public class CommentDto {
-    private Long postId;
+public class CommentViewDto {
+    private Long id;
     private String content;
 }

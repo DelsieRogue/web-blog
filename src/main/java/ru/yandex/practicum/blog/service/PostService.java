@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ru.yandex.practicum.blog.dao.CommentDao;
 import ru.yandex.practicum.blog.dao.PostDao;
-import ru.yandex.practicum.blog.dto.CommentDto;
+import ru.yandex.practicum.blog.dto.CommentViewDto;
+import ru.yandex.practicum.blog.dto.PostDto;
 import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.dto.PostViewDto;
+import ru.yandex.practicum.blog.mapper.PostMapper;
 import ru.yandex.practicum.blog.model.Post;
 import ru.yandex.practicum.blog.utils.ContentUtils;
 
@@ -32,7 +34,7 @@ public class PostService {
 
     public PostViewDto getPostViewById(Long postId) {
         Post post = postDao.getPostById(postId);
-        List<CommentDto> commentDtoList = commentDao.getByPostId(postId);
+        List<CommentViewDto> commentViewDtoList = commentDao.getByPostId(postId);
         return new PostViewDto()
                 .setId(post.getId())
                 .setTitle(post.getTitle())
@@ -40,22 +42,29 @@ public class PostService {
                 .setLikeCount(post.getLikeCount())
                 .setTags(post.getTags())
                 .setImageName(post.getImageName())
-                .setComments(commentDtoList);
+                .setComments(commentViewDtoList);
     }
 
-    public void createPost(Post post, MultipartFile image) {
+    public void createPost(PostDto postDto, MultipartFile image) {
+        Post post = PostMapper.fromPostDto(postDto);
         Optional<String> fileName = imageService.save(image);
         fileName.ifPresent(post::setImageName);
         postDao.createPost(post);
     }
 
-    public void updatePost(Post post, MultipartFile image) {
-        if (post.getImageName() != null && !image.isEmpty()) {
-            imageService.deleteImage(post.getImageName());
+    public void updatePost(Long postId, PostDto postDto, MultipartFile image) {
+        Post post = PostMapper.fromPostDto(postDto);
+        if (Boolean.TRUE.equals(postDto.getIsNeedDeleteImage())) {
+            imageService.deleteImage(postDto.getImageName());
+            post.setImageName(null);
+        }
+
+        if (!image.isEmpty()) {
             Optional<String> fileName = imageService.save(image);
             fileName.ifPresent(post::setImageName);
         }
-        postDao.updatePost(post);
+        System.out.println("!!!!!!!!!" + post.toString());
+        postDao.updatePost(postId, post);
     }
 
     public void deletePost(Long postId) {
