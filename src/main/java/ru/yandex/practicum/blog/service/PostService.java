@@ -50,7 +50,7 @@ public class PostService {
     }
 
     public void updatePost(Post post, MultipartFile image) {
-        if (!image.isEmpty()) {
+        if (post.getImageName() != null && !image.isEmpty()) {
             imageService.deleteImage(post.getImageName());
             Optional<String> fileName = imageService.save(image);
             fileName.ifPresent(post::setImageName);
