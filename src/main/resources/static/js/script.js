@@ -8,13 +8,12 @@ function changePageSize() {
     const tagFilter = document.getElementById('tagFilter').value;
     const currentPage = 1;
 
-    localStorage.setItem('pageSize', pageSize);
     window.location.href = buildPostsUrl(currentPage, pageSize, tagFilter);
 }
 
 function changePage(page) {
-    const pageSize = localStorage.getItem('pageSize');
-    const tagFilter = localStorage.getItem('tagFilter');
+    const pageSize = document.getElementById('pageSize').value;
+    const tagFilter = document.getElementById('tagFilter').value;
 
     window.location.href = buildPostsUrl(page, pageSize, tagFilter);
 }
@@ -24,7 +23,6 @@ function applyFilter() {
     const pageSize = document.getElementById('pageSize').value;
     const currentPage = 1;
 
-    localStorage.setItem('tagFilter', tagFilter);
     window.location.href = buildPostsUrl(currentPage, pageSize, tagFilter);
 }
 
