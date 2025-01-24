@@ -25,6 +25,7 @@ public class PostService {
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
         return postDao.getPostPreviewList(page, size, tagFilter);
     }
+
     public Long getCountPost(String tagFilter) {
         return postDao.getCount(tagFilter);
     }
@@ -63,5 +64,9 @@ public class PostService {
             imageService.deleteImage(post.getImageName());
         }
         postDao.deletePost(postId);
+    }
+
+    public Long addLike(Long postId) {
+        return postDao.addLike(postId);
     }
 }

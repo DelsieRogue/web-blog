@@ -46,7 +46,7 @@ public class PostDao {
             FROM post p WHERE p.id = ?;
             """;
 
-    private static final String POST_INSERT_TEMPLATE = """
+    private static final String POST_CREATE_TEMPLATE = """
             INSERT INTO post (title, image_name, content, tags) VALUES (?, ?, ?, ?);
             """;
 
@@ -57,6 +57,12 @@ public class PostDao {
 
     private static final String POST_DELETE_TEMPLATE = """
             DELETE from post WHERE id = ?
+            """;
+
+    private static final String POST_ADD_LIKE_TEMPLATE = """
+            UPDATE post
+            SET like_count = like_count + 1
+            WHERE id = ? RETURNING like_count;
             """;
 
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
@@ -79,7 +85,7 @@ public class PostDao {
     }
 
     public void createPost(Post post) {
-        jdbcTemplate.update(POST_INSERT_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags());
+        jdbcTemplate.update(POST_CREATE_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags());
     }
 
     public void updatePost(Post post) {
@@ -88,5 +94,9 @@ public class PostDao {
 
     public void deletePost(Long postId) {
         jdbcTemplate.update(POST_DELETE_TEMPLATE, postId);
+    }
+
+    public Long addLike(Long postId) {
+        return jdbcTemplate.queryForObject(POST_ADD_LIKE_TEMPLATE, Long.class, postId);
     }
 }

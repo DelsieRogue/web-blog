@@ -35,10 +35,16 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String getPostView(Model model, @PathVariable("id") Long postId){
+    public String getPostView(Model model, @PathVariable("id") Long postId) {
         PostViewDto postView = postService.getPostViewById(postId);
         model.addAttribute("post", postView);
         return "post";
+    }
+
+    @PutMapping("/{id}/like")
+    @ResponseBody
+    public Long addLike(@PathVariable("id") Long postId) {
+        return postService.addLike(postId);
     }
 
     @PostMapping

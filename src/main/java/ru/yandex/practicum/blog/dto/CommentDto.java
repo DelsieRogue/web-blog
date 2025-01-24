@@ -8,6 +8,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class CommentDto {
-    private Long commentId;
+    private Long id;
     private String content;
 }
