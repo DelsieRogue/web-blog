@@ -26,10 +26,9 @@ public class PostController {
         Long totalPosts = postService.getCountPost(tagFilter);
         int totalPages = (int) Math.ceil((double) totalPosts / size);
         model.addAttribute("posts", posts);
-        model.addAttribute("totalPosts", totalPosts);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("currentPage", page);
-        model.addAttribute("size", size);
+        model.addAttribute("pageSize", size);
         model.addAttribute("filter", tagFilter);
         model.addAttribute("newPost", new Post());
         return "posts";

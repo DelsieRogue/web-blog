@@ -11,15 +11,15 @@
 <header>
     <h1>Блог</h1>
     <div class="filters">
-        <input type="text" id="tagFilter" placeholder="Фильтрация по тегу">
-        <button id="applyFilterButton" th:value="${filter}">Применить фильтр</button>
+        <input type="text" id="tagFilter" placeholder="Фильтрация по тегу" th:value="${filter}">
+        <button id="applyFilterButton" onclick="applyFilter()">Применить фильтр</button>
     </div>
     <button id="addPostButton" onclick="togglePostForm()">Добавить пост</button>
 </header>
 <div class="main-content">
     <div class="pagination-settings">
         <label for="pageSize">Показывать по:</label>
-        <select id="pageSize">
+        <select id="pageSize" onchange="changePageSize()">
             <option th:value="10" th:selected="${pageSize == 10}">10</option>
             <option th:value="20" th:selected="${pageSize == 20}">20</option>
             <option th:value="50" th:selected="${pageSize == 50}">50</option>
@@ -50,6 +50,7 @@
 
     <div class="pagination" th:if="${!#lists.isEmpty(posts)}">
         <button th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:onclick="changePage([[${i}]])"
                 th:classappend="${i == currentPage} ? 'active page-button' : 'page-button'"
                 th:text="${i}">
         </button>
