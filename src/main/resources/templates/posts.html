@@ -11,21 +11,20 @@
 <header>
     <h1>Блог</h1>
     <div class="filters">
+        <div class="pagination-settings">
+            <label for="pageSize">Показывать по:</label>
+            <select id="pageSize" onchange="changePageSize()">
+                <option th:value="10" th:selected="${pageSize == 10}">10</option>
+                <option th:value="20" th:selected="${pageSize == 20}">20</option>
+                <option th:value="50" th:selected="${pageSize == 50}">50</option>
+            </select>
+        </div>
         <input type="text" id="tagFilter" placeholder="Фильтрация по тегу" th:value="${filter}">
-        <button id="applyFilterButton" onclick="applyFilter()">Применить фильтр</button>
+        <button id="applyFilterButton" onclick="applyFilter()">Применить</button>
     </div>
     <button id="addPostButton" onclick="togglePostForm()">Добавить пост</button>
 </header>
 <div class="main-content">
-    <div class="pagination-settings">
-        <label for="pageSize">Показывать по:</label>
-        <select id="pageSize" onchange="changePageSize()">
-            <option th:value="10" th:selected="${pageSize == 10}">10</option>
-            <option th:value="20" th:selected="${pageSize == 20}">20</option>
-            <option th:value="50" th:selected="${pageSize == 50}">50</option>
-        </select>
-    </div>
-
     <div class="post-container">
         <div th:if="${#lists.isEmpty(posts)}" class="no-posts">
             <p>Ничего не найдено. Попробуйте изменить фильтры или добавить новые посты!</p>
@@ -39,10 +38,10 @@
             <div class="post-tags" th:text="${post.tags}"></div>
             <div class="post-stats">
                 <div class="like-count">
-                    <span th:text="${post.likeCount} + ' Лайков'"></span>
+                    <span th:text="${post.likeCount} + ' лайков'"></span>
                 </div>
                 <div class="comment-count">
-                    <span th:text="${post.commentCount} + ' Комментариев'"></span>
+                    <span th:text="${post.commentCount} + ' комментариев'"></span>
                 </div>
             </div>
         </div>
@@ -63,12 +62,14 @@
             <input type="text" name="title" th:field="*{title}" placeholder="Название поста" required>
             <input type="file" name="image" accept="image/*" required>
             <textarea name="content" th:field="*{content}" placeholder="Текст поста" required></textarea>
-            <input type="text" name="tags" th:field="*{tags}" placeholder="Теги (через запятую)" required>
+            <input type="text" name="tags" th:field="*{tags}" placeholder="Теги (через #)" required>
             <button type="submit">Добавить</button>
             <button type="button" onclick="togglePostForm()">Закрыть</button>
         </form>
     </div>
 </div>
-
+<footer>
+    <p>© 2025 Блог</p>
+</footer>
 </body>
 </html>

@@ -96,7 +96,7 @@ function likePost(postId) {
             }
         })
         .then(likes => {
-            document.getElementById("like-count").textContent = likes;
+            document.getElementById("like-count").textContent = likes + ' ❤️';
         })
         .catch(error => {
             console.error('Ошибка:', error);

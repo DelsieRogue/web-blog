@@ -9,7 +9,7 @@
 </head>
 <body>
 <header>
-    <h1><a href="/" style="text-decoration: none; color: inherit;">Блог</a></h1>
+    <h1><a href="/web-blog/post" style="text-decoration: none; color: inherit;">Блог</a></h1>
 </header>
 <div class="main-content page-container">
     <h2 class="post-title" th:text="${post.title}">Название поста</h2>
@@ -26,9 +26,9 @@
     </div>
 
     <!-- Лайки -->
-    <div class="post-likes">
-        <button class="like-button" th:onclick="likePost([[${post.id}]])">❤️</button>
-        <span id="like-count" th:text="${post.likeCount}">0</span> Лайков
+    <div class="post-stats">
+        <button class="like-button" th:onclick="likePost([[${post.id}]])">Мне нравится</button>
+        <span id="like-count" th:text="${post.likeCount} + ' ❤️'"></span>
     </div>
 
     <!-- Комментарии -->
@@ -78,7 +78,7 @@
                    th:style="${post.imageName != null} ? 'display: none;' : ''">
             <textarea name="content" th:field="*{content}" placeholder="Текст поста" required></textarea>
             <input type="text" name="tags" th:field="*{tags}" placeholder="Теги (через запятую)" required>
-            <button type="submit">Изменить</button>
+            <button type="submit">Cохранить</button>
             <button type="button" onclick="togglePostForm()">Закрыть</button>
         </form>
     </div>
