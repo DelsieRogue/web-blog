@@ -33,7 +33,7 @@
             <h2><a th:href="@{/post/{id}(id=${post.id})}" th:text="${post.title}"></a></h2>
             <img th:if="${post.getImageName()}" th:src="@{/image/{name}(name=${post.getImageName})}" alt="Image" class="post-image">
             <div class="post-content-preview">
-                <p th:each="content: ${post.contentPreview}" th:text="${content}"></p>
+                <p th:text="${post.contentPreview}"></p>
             </div>
             <div class="post-tags" th:text="${post.tags}"></div>
             <div class="post-stats">

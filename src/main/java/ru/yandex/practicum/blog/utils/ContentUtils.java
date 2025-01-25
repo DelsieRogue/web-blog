@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ContentUtils {
-    private static final Integer PREVIEW_CONTENT_LENGTH = 1000;
+    private static final Integer PREVIEW_CONTENT_LENGTH = 350;
     private static final String SKIP_SYMBOL_REGEX = "[\\n\\t]";
 
     public static String getPreviewContent(String content) {
