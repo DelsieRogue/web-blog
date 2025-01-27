@@ -1,11 +1,13 @@
 #!/bin/bash
 
-mvn clean install -Pdev
+export IMAGES_DIR="$(pwd)/uploaded-images/"
 
-CATALINA_HOME="/Users/ildan/Downloads/apache-tomcat-10.1.34"
+mvn clean install
+
+CATALINA_HOME="указать путь до Tomcat"
+#CATALINA_HOME="/Users/ildan/Downloads/apache-tomcat-10.1.34"
 
 WAR_FILE="$(pwd)/target/web-blog.war"
-
 WEBAPPS_DIR="$CATALINA_HOME/webapps"
 
 cp "$WAR_FILE" "$WEBAPPS_DIR"
