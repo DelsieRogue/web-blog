@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("integration-test")
-public class JdbcBeanConfiguration {
+public class DatabaseConfiguration {
     @Bean
     public DataSource dataSource(
             @Value("${spring.datasource.url}") String url,

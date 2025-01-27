@@ -14,7 +14,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.blog.config.JdbcBeanConfiguration;
+import ru.yandex.practicum.blog.config.DatabaseConfiguration;
 import ru.yandex.practicum.blog.config.WebConfiguration;
 import ru.yandex.practicum.blog.dto.CommentDto;
 
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ActiveProfiles("integration-test")
 @WebAppConfiguration
-@SpringJUnitConfig(classes = {WebConfiguration.class, JdbcBeanConfiguration.class})
+@SpringJUnitConfig(classes = {WebConfiguration.class, DatabaseConfiguration.class})
 @TestPropertySource(locations = "classpath:test-application.properties")
 public class CommentControllerIntegrationTest {
 
