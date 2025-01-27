@@ -25,32 +25,27 @@
         <button class="delete-button" th:onclick="deletePost([[${post.id}]])">Удалить</button>
     </div>
 
-    <!-- Лайки -->
     <div class="post-stats">
         <button class="like-button" th:onclick="likePost([[${post.id}]])">Мне нравится</button>
         <span id="like-count" th:text="${post.likeCount} + ' ❤️'"></span>
     </div>
 
-    <!-- Комментарии -->
     <div class="comments-section">
         <h3>Комментарии</h3>
         <ul class="comments-list">
             <li th:id="'li' + ${iter.index}" th:data-index="${iter.index}" th:each="comment, iter : ${post.comments}"
                 class="comment">
-                <!-- Элемент для отображения текста комментария -->
                 <span th:id="'span' + ${iter.index}"
                       th:onclick="enableEditing([[${iter.index}]])"
                       th:text="${comment.content}"
                       class="comment-text">
                 </span>
-                <!-- Элемент для редактирования комментария -->
                 <textarea th:id="'textarea' + ${iter.index}"
                           class="edit-comment-field"
                           th:onkeyup="updateCommentKeyUp(event, [[${iter.index}]], [[${comment.id}]], [[${post.id}]])"
                           th:onblur="updateCommentOnBlur(event, [[${iter.index}]], [[${comment.id}]], [[${post.id}]])"
                           style="display: none;">
                 </textarea>
-                <!-- Кнопка удаления комментария -->
                 <button class="delete-comment-button" th:onclick="deleteComment([[${comment.id}]], [[${iter.index}]])">
                     🗑️
                 </button>

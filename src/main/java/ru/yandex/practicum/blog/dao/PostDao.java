@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.dao.mapper.PostPreviewMapper;
+import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.model.Post;
 
 import java.sql.PreparedStatement;
@@ -64,7 +64,11 @@ public class PostDao {
     private static final String POST_ADD_LIKE_TEMPLATE = """
             UPDATE post
             SET like_count = like_count + 1
-            WHERE id = ? RETURNING like_count;
+            WHERE id = ?;
+            """;
+
+    private static final String POST_GET_LIKE_TEMPLATE = """
+            SELECT like_count FROM post WHERE id = ?
             """;
 
     public List<PostPreviewDto> getPostPreviewList(Integer page, Integer size, String tagFilter) {
@@ -111,6 +115,7 @@ public class PostDao {
     }
 
     public Long addLike(Long postId) {
-        return jdbcTemplate.queryForObject(POST_ADD_LIKE_TEMPLATE, Long.class, postId);
+        jdbcTemplate.update(POST_ADD_LIKE_TEMPLATE, postId);
+        return jdbcTemplate.queryForObject(POST_GET_LIKE_TEMPLATE, Long.class, postId);
     }
 }

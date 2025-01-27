@@ -2,11 +2,14 @@ package ru.yandex.practicum.blog.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.blog.dto.CommentViewDto;
 import ru.yandex.practicum.blog.dao.mapper.CommentDtoMapper;
+import ru.yandex.practicum.blog.dto.CommentViewDto;
 import ru.yandex.practicum.blog.model.Comment;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,9 +27,8 @@ public class CommentDao {
             UPDATE comment SET content = ? WHERE id = ?
             """;
     private static final String COMMENT_CREATE_TEMPLATE = """
-            INSERT INTO comment (content, post_id) VALUES (?, ?) RETURNING id, content;
+            INSERT INTO comment (content, post_id) VALUES (?, ?)
             """;
-
     private static final String COMMENT_DELETE_TEMPLATE = """
             DELETE from comment WHERE id = ?
             """;
@@ -40,8 +42,15 @@ public class CommentDao {
     }
 
     public CommentViewDto createComment(Comment comment) {
-        return jdbcTemplate.queryForObject(COMMENT_CREATE_TEMPLATE, new CommentDtoMapper(),
-                comment.getContent(), comment.getPostId());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(COMMENT_CREATE_TEMPLATE, new String[]{"id"});
+            preparedStatement.setString(1, comment.getContent());
+            preparedStatement.setLong(2, comment.getPostId());
+            return preparedStatement;
+        }, keyHolder);
+        return new CommentViewDto().setId(keyHolder.getKey().longValue()).setContent(comment.getContent());
     }
 
     public void deleteComment(Long commentId) {

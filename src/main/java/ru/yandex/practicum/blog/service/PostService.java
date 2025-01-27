@@ -63,7 +63,6 @@ public class PostService {
             Optional<String> fileName = imageService.save(image);
             fileName.ifPresent(post::setImageName);
         }
-        System.out.println("!!!!!!!!!" + post.toString());
         postDao.updatePost(postId, post);
     }
 
