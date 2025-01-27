@@ -41,6 +41,7 @@ public class DatabaseConfiguration {
         DataSource dataSource = event.getApplicationContext().getBean(DataSource.class);
         ResourceDatabasePopulator resource = new ResourceDatabasePopulator();
         resource.addScript(new ClassPathResource("schema.sql"));
+        resource.addScript(new ClassPathResource("data.sql"));
         resource.execute(dataSource);
     }
 }
