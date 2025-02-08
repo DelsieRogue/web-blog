@@ -4,15 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Primary;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yandex.practicum.blog.config.DaoMockConfig;
-import ru.yandex.practicum.blog.config.ServiceMockConfig;
 import ru.yandex.practicum.blog.dao.CommentDao;
 import ru.yandex.practicum.blog.dao.PostDao;
 import ru.yandex.practicum.blog.dto.CommentViewDto;
@@ -25,17 +19,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ActiveProfiles("unit-test")
-@SpringJUnitConfig(PostServiceTest.PostServiceTestConfig.class)
+@SpringJUnitConfig(classes = PostService.class)
 class PostServiceTest {
 
     @Autowired
     private PostService postService;
-    @Autowired
+    @MockitoBean
     private PostDao postDao;
-    @Autowired
+    @MockitoBean
     private CommentDao commentDao;
-    @Autowired
+    @MockitoBean
     private ImageService imageService;
 
 
@@ -109,13 +102,4 @@ class PostServiceTest {
         assertEquals(2L, count);
     }
 
-    @Import({DaoMockConfig.class, ServiceMockConfig.class})
-    @Configuration
-    static class PostServiceTestConfig {
-        @Primary
-        @Bean
-        public PostService postService(PostDao postDao, CommentDao commentDao, ImageService imageService) {
-            return new PostService(postDao, commentDao, imageService);
-        }
-    }
 }

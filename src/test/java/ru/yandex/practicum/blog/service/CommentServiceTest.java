@@ -1,36 +1,26 @@
 package ru.yandex.practicum.blog.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.yandex.practicum.blog.config.DaoMockConfig;
-import ru.yandex.practicum.blog.config.ServiceBeanConfig;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.yandex.practicum.blog.dao.CommentDao;
 import ru.yandex.practicum.blog.dto.CommentDto;
 import ru.yandex.practicum.blog.model.Comment;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@ActiveProfiles("unit-test")
-@SpringJUnitConfig(classes = { DaoMockConfig.class, ServiceBeanConfig.class })
+@SpringBootTest(classes = CommentService.class)
 class CommentServiceTest {
 
     @Autowired
     private CommentService commentService;
-    @Autowired
+    @MockitoBean
     private CommentDao commentDao;
-
-    @BeforeEach
-    void beforeEach() {
-        Mockito.clearInvocations(commentDao);
-    }
 
     @Test
     void updateComment() {

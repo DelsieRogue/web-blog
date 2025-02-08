@@ -3,8 +3,11 @@ package ru.yandex.practicum.blog.dao;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.blog.dao.mapper.PostPreviewMapper;
+import ru.yandex.practicum.blog.dto.CommentViewDto;
 import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.model.Post;
 
@@ -53,7 +56,7 @@ public class PostDao {
             """;
 
     private static final String POST_UPDATE_TEMPLATE = """
-            UPDATE post SET title = ?, image_name = ?, content = ?, tags = ? 
+            UPDATE post SET title = ?, image_name = ?, content = ?, tags = ?
             WHERE id = ?
             """;
 
@@ -90,8 +93,19 @@ public class PostDao {
         return tagFilter != null && !tagFilter.isBlank() ? "%" + tagFilter + "%" : "%";
     }
 
-    public void createPost(Post post) {
-        jdbcTemplate.update(POST_CREATE_TEMPLATE, post.getTitle(), post.getImageName(), post.getContent(), post.getTags());
+    public Post createPost(Post post) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement("INSERT INTO post (title, image_name, content, tags) VALUES (?, ?, ?, ?)",
+                            new String[]{"id"});
+            preparedStatement.setString(1, post.getTitle());
+            preparedStatement.setString(2, post.getImageName());
+            preparedStatement.setString(3, post.getContent());
+            preparedStatement.setString(4, post.getTags());
+            return preparedStatement;
+        }, keyHolder);
+        return post.setId(keyHolder.getKey().longValue());
     }
 
     public void updatePost(Long postId, Post post) {

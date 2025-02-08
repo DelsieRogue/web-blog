@@ -2,20 +2,20 @@
 
 export IMAGES_DIR="$(pwd)/uploaded-images/"
 
-mvn clean install
+APP_PORT=8080
 
-CATALINA_HOME="указать путь до Tomcat"
-#CATALINA_HOME="/Users/ildan/Downloads/apache-tomcat-10.1.34"
+PID=$(lsof -t -i:$APP_PORT)
+if [ -n "$PID" ]; then
+    echo "Найден процесс, использующий порт $APP_PORT (PID: $PID). Завершаем его..."
+    kill -9 $PID
+    echo "Процесс $PID завершен. Порт $APP_PORT освобожден."
+    sleep 2
+else
+    echo "Порт $APP_PORT свободен."
+fi
 
-WAR_FILE="$(pwd)/target/web-blog.war"
-WEBAPPS_DIR="$CATALINA_HOME/webapps"
+gradle bootJarWithTest
 
-cp "$WAR_FILE" "$WEBAPPS_DIR"
+chmod 777 ./build/libs/web-blog-DEV-SNAPSHOT.jar
+./build/libs/web-blog-DEV-SNAPSHOT.jar
 
-echo "Остановка Tomcat..."
-$CATALINA_HOME/bin/shutdown.sh
-
-echo "Запуск Tomcat..."
-$CATALINA_HOME/bin/startup.sh
-
-echo "web-blog.war развернут и Tomcat перезапущен."

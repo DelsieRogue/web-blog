@@ -1,3 +1,8 @@
+/build/
 /.idea/
-/target/
-/.mvn/
+*.bat
+/gradlew
+/HELP.md
+/.gitattributes
+/.gradle/
+/gradle/

@@ -4,11 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.web.multipart.MultipartFile;
-import ru.yandex.practicum.blog.config.DaoMockConfig;
-import ru.yandex.practicum.blog.config.ServiceBeanConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-@ActiveProfiles("unit-test")
-@SpringJUnitConfig(classes = { DaoMockConfig.class, ServiceBeanConfig.class })
+@SpringJUnitConfig(classes = ImageService.class)
 class ImageServiceTest {
 
     @Autowired

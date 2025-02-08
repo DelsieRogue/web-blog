@@ -1,18 +1,14 @@
 package ru.yandex.practicum.blog.dao;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import ru.yandex.practicum.blog.config.DaoBeanConfig;
-import ru.yandex.practicum.blog.config.JdbcMockConfig;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import ru.yandex.practicum.blog.dao.mapper.CommentDtoMapper;
 import ru.yandex.practicum.blog.dto.CommentViewDto;
 import ru.yandex.practicum.blog.model.Comment;
@@ -26,18 +22,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ActiveProfiles("unit-test")
-@SpringJUnitConfig(classes = {JdbcMockConfig.class, DaoBeanConfig.class})
+@SpringBootTest(classes = CommentDao.class)
 class CommentDaoTest {
     @Autowired
     CommentDao commentDao;
-    @Autowired
+    @MockitoBean
     JdbcTemplate jdbcTemplate;
-
-    @BeforeEach
-    void beforeEach() {
-        Mockito.clearInvocations(jdbcTemplate);
-    }
 
     @Test
     void getByPostId() {

@@ -10,7 +10,7 @@ create table if not exists post
     constraint post_unique_id unique (id)
 );
 
-create sequence if not exists custom_post_id_seq start 1000;
+create sequence if not exists custom_post_id_seq start with 1000;
 alter table post alter column id set default nextval('custom_post_id_seq');
 
 create table if not exists comment

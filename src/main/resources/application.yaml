@@ -1,0 +1,21 @@
+server:
+  servlet:
+    context-path: /web-blog
+
+spring:
+  application:
+    name: web-blog
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    driverClassName: org.postgresql.Driver
+    password: postgres
+  sql:
+    init:
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      mode: always
+
+image.folder:
+  server.path: ${IMAGES_DIR}
+  client.path: /image/

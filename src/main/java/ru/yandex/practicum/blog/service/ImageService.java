@@ -44,7 +44,7 @@ public class ImageService {
         try {
             Path path = Paths.get(serverPath + imageName);
             Files.delete(path);
-            log.info("Файл {} удалён" + imageName);
+            log.info("Файл {} удалён", imageName);
         } catch (IOException e) {
             log.error("Ошибка при удалении файла {}", imageName, e);
         }

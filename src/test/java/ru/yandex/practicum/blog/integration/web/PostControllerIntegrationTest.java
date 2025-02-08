@@ -1,62 +1,45 @@
-package ru.yandex.practicum.blog.integration;
+package ru.yandex.practicum.blog.integration.web;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import ru.yandex.practicum.blog.config.DatabaseConfiguration;
-import ru.yandex.practicum.blog.config.WebConfiguration;
+import ru.yandex.practicum.blog.controller.PostController;
 import ru.yandex.practicum.blog.dto.CommentViewDto;
+import ru.yandex.practicum.blog.dto.PostPreviewDto;
 import ru.yandex.practicum.blog.dto.PostViewDto;
+import ru.yandex.practicum.blog.service.PostService;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
-@ActiveProfiles("integration-test")
-@WebAppConfiguration
-@SpringJUnitConfig(classes = {WebConfiguration.class, DatabaseConfiguration.class})
-@TestPropertySource(locations = "classpath:test-application.properties")
-class PostControllerIntegrationTest {
-
+@WebMvcTest(PostController.class)
+public class PostControllerIntegrationTest {
     @Autowired
-    private WebApplicationContext webApplicationContext;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
     private MockMvc mockMvc;
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    @BeforeEach
-    void setUp() {
-        System.out.println(Arrays.toString(applicationContext.getBeanDefinitionNames()));
-        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        jdbcTemplate.execute("DELETE FROM post");
-        jdbcTemplate.execute("INSERT INTO post (id, title, image_name, content, tags)" +
-                " VALUES (1, 'Название', 'img.png', 'содержание поста', 'tag')");
-        jdbcTemplate.execute("INSERT INTO post (id, title, image_name, content, tags) " +
-                "VALUES (2, 'Название2', 'img2.png', 'содержание поста2', 'tag')");
-        jdbcTemplate.execute("INSERT INTO comment (id, post_id, content) VALUES (1, 1, 'содержание коментария')");
-        jdbcTemplate.execute("INSERT INTO comment (id, post_id, content) VALUES (2, 2, 'содержание коментария2')");
-        jdbcTemplate.update("ALTER TABLE post ALTER COLUMN id RESTART WITH 3");
-        jdbcTemplate.update("ALTER TABLE comment ALTER COLUMN id RESTART WITH 3");
-    }
+    @MockitoBean
+    private PostService postService;
 
     @Test
     public void getPostPreviewList() throws Exception {
-        assertNotNull(applicationContext.getBean(JdbcTemplate.class), "JdbcTemplate bean is not loaded");
+        List<PostPreviewDto> postPreviewDtos = List.of(new PostPreviewDto().setTitle("1").setContentPreview("2").setId(1L)
+                .setTags("#1").setLikeCount(2L).setImageName("name.jpg"));
+        when(postService.getPostPreviewList(any(), any(), anyString())).thenReturn(postPreviewDtos);
 
         mockMvc.perform(get("/post").param("tagFilter", "tag"))
                 .andExpect(status().isOk())
@@ -75,6 +58,7 @@ class PostControllerIntegrationTest {
                 .setTags("tag")
                 .setLikeCount(0L)
                 .setComments(List.of(new CommentViewDto().setContent("содержание коментария").setId(1L)));
+        when(postService.getPostViewById(any())).thenReturn(postViewDto);
         mockMvc.perform(get("/post/{id}", 1))
                 .andExpect(status().isOk())
                 .andExpect(view().name("post"))
@@ -84,6 +68,7 @@ class PostControllerIntegrationTest {
 
     @Test
     public void addLike() throws Exception {
+        when(postService.addLike(any())).thenReturn(1L);
         mockMvc.perform(put("/post/{id}/like", 1))
                 .andExpect(status().isOk())
                 .andExpect(content().string("1"));
@@ -99,6 +84,7 @@ class PostControllerIntegrationTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/post"));
+        verify(postService, times(1)).createPost(any(), any());
     }
 
     @Test
@@ -114,6 +100,7 @@ class PostControllerIntegrationTest {
                         }))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/post/" + 1));
+        verify(postService, times(1)).updatePost(any(), any(), any());
     }
 
     @Test
@@ -121,7 +108,6 @@ class PostControllerIntegrationTest {
         mockMvc.perform(delete("/post/{id}", 1))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/post"));
+        verify(postService, times(1)).deletePost(any());
     }
-
 }
-
